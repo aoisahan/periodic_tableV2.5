@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Periodic Table - All 118 Elements with Advanced Features</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Controls -->
+    <button class="theme-btn" id="themeBtn" title="Toggle Theme">🌙</button>
+    
+    <div class="search-box">
+        <input type="text" id="search" placeholder="🔍 Search elements...">
+        <button id="clearSearch">×</button>
+    </div>
+
+    <div class="top-controls">
+        <button class="icon-btn" id="compareBtn" title="Compare Mode">⚖️</button>
+        <button class="icon-btn" id="favBtn" title="Favorites">⭐</button>
+        <button class="icon-btn" id="soundBtn" title="Sound">🔊</button>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <h1>PERIODIC TABLE</h1>
+        <p>All 118 Elements • Interactive 3D Explorer</p>
+    </header>
+
+    <!-- Quick Actions -->
+    <div class="actions">
+        <button onclick="showRandom()">🎲 Random</button>
+        <button onclick="openQuiz()">🎯 Quiz</button>
+        <button onclick="openTrends()">📈 Trends</button>
+        <button onclick="openTimeline()">⏰ Timeline</button>
+        <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
+        <button onclick="resetAll()">↻ Reset</button>
+    </div>
+
+    <!-- Categories -->
+    <div class="categories" id="categories"></div>
+
+    <!-- Periodic Table -->
+    <div class="table" id="table"></div>
+
+    <!-- Charts -->
+    <div class="charts" id="charts"></div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="close" onclick="closeDetail()">×</button>
+            <button class="fav-btn" id="favDetailBtn">⭐</button>
+            
+            <div class="detail-header">
+                <div class="big-symbol" id="dSymbol"></div>
+                <h2 id="dName"></h2>
+                <p id="dCategory"></p>
+                <button onclick="speak()">🔊 Pronounce</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="3d">3D Model</button>
+                <button class="tab" data-tab="info">Info</button>
+                <button class="tab" data-tab="calc">Calculator</button>
+            </div>
+
+            <div class="tab-content active" id="tab3d">
+                <canvas id="canvas3d" width="450" height="450"></canvas>
+                <div class="controls">
+                    <button onclick="togglePause()">⏸ Pause</button>
+                    <button onclick="changeSpeed()">⚡ Speed</button>
+                    <button onclick="toggleZoom()">🔍 Zoom</button>
+                </div>
+            </div>
+
+            <div class="tab-content" id="tabInfo">
+                <div class="info-grid" id="infoGrid"></div>
+                <div class="fact" id="fact"></div>
+            </div>
+
+            <div class="tab-content" id="tabCalc">
+                <div class="calculator">
+                    <h3>Particle Calculator</h3>
+                    <label>Number of atoms:</label>
+                    <input type="number" id="atomCount" value="1" min="1" oninput="calculate()">
+                    <div id="calcResults"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Modal -->
+    <div class="modal" id="compareModal">
+        <div class="modal-content">
+            <button class="close" onclick="closeCompare()">×</button>
+            <h2>⚖️ Compare Elements</h2>
+            <div class="compare-grid">
+                <div class="compare-item" id="comp1">Click element 1</div>
+                <div class="vs">VS</div>
+                <div class="compare-item" id="comp2">Click element 2</div>
+            </div>
+            <div id="compDetails"></div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal" id="quizModal">
+        <div class="modal-content">
+            <button class="close" onclick="closeQuiz()">×</button>
+            <h2>🎯 Element Quiz</h2>
+            <div class="difficulty">
+                <button class="diff active" data-level="easy">Easy</button>
+                <button class="diff" data-level="medium">Medium</button>
+                <button class="diff" data-level="hard">Hard</button>
+            </div>
+            <div id="quizQ" class="quiz-q"></div>
+            <div id="quizOpts" class="quiz-opts"></div>
+            <div class="quiz-info">
+                <span>Score: <b id="qScore">0</b>/10</span>
+                <span>Time: <b id="qTime">30</b>s</span>
+            </div>
+            <button id="qNext" onclick="nextQ()" style="display:none;">Next</button>
+        </div>
+    </div>
+
+    <!-- Trends Modal -->
+    <div class="modal" id="trendsModal">
+        <div class="modal-content wide">
+            <button class="close" onclick="closeTrends()">×</button>
+            <h2>📈 Periodic Trends</h2>
+            <div class="trend-btns">
+                <button class="trend-btn active" onclick="showTrend('mass')">Mass</button>
+                <button class="trend-btn" onclick="showTrend('reactivity')">Reactivity</button>
+                <button class="trend-btn" onclick="showTrend('radius')">Radius</button>
+            </div>
+            <canvas id="trendCanvas" width="800" height="400"></canvas>
+        </div>
+    </div>
+
+    <!-- Timeline Modal -->
+    <div class="modal" id="timelineModal">
+        <div class="modal-content wide">
+            <button class="close" onclick="closeTimeline()">×</button>
+            <h2>⏰ Discovery Timeline</h2>
+            <div id="timeline"></div>
+        </div>
+    </div>
+
+    <!-- Favorites Panel -->
+    <div class="favorites-panel" id="favPanel">
+        <h3>⭐ Favorites</h3>
+        <div id="favList">No favorites yet</div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
